@@ -3,6 +3,7 @@ package com.unir.d1001.auth.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unir.d1001.auth.dto.LoginRequest;
 import com.unir.d1001.auth.dto.RegisterRequest;
 import com.unir.d1001.auth.dto.TokenResponse;
 import com.unir.d1001.auth.services.AuthService;
@@ -28,4 +29,10 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest entity) {
+        var response = authService.login(entity);
+
+        return ResponseEntity.ok(response);
+    }
 }
