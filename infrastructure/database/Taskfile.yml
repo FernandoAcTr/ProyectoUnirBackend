@@ -1,0 +1,18 @@
+version: "3"
+
+dotenv: [".env"]
+
+tasks:
+  migrate:
+    desc: "Run database migrations"
+    cmds:
+      - atlas migrate hash --dir "file://migrations"
+      - atlas migrate apply --dir "file://migrations" --url "{{.DATABASE_URL}}"
+  migrate-new:
+    desc: "Create a new migration file"
+    cmds:
+      - atlas migrate new {{.name}} --dir "file://migrations"
+  hash:
+    desc: "Generate a hash for the current schema"
+    cmds:
+      - atlas migrate hash
