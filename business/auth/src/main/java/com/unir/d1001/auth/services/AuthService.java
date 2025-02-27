@@ -1,5 +1,8 @@
 package com.unir.d1001.auth.services;
 
+import java.time.ZoneId;
+import java.util.Optional;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -54,6 +57,7 @@ public class AuthService {
         tokenRepository.save(Token.builder()
                 .user(user)
                 .token(token)
+                .expiresAt(jwtService.getExpiration(token).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
                 .build());
     }
 
@@ -64,5 +68,29 @@ public class AuthService {
         String refreshToken = jwtService.createRefreshToken(user);
         SaveToken(user, refreshToken);
         return new TokenResponse(token, refreshToken);
+    }
+
+    public TokenResponse refreshToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            throw new IllegalArgumentException("Invalid token");
+        }
+
+        Optional<Token> dbToken = tokenRepository.findByToken(refreshToken);
+        if (dbToken.isEmpty()) {
+            throw new IllegalArgumentException("Invalid token");
+        }
+
+        try {
+            User user = jwtService.parseToken(refreshToken);
+
+            String token = jwtService.createtoken(user);
+            String newRefreshToken = jwtService.createRefreshToken(user);
+            SaveToken(user, newRefreshToken);
+
+            return new TokenResponse(token, newRefreshToken);
+        } catch (Exception e) {
+            tokenRepository.delete(dbToken.get());
+            throw new IllegalArgumentException("Invalid token");
+        }
     }
 }

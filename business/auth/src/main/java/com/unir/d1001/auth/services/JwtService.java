@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.unir.d1001.auth.entities.User;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -49,4 +50,30 @@ public class JwtService {
         byte[] secretBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(secretBytes);
     }
+
+    public User parseToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        User user = User.builder()
+                .id(Long.parseLong(claims.getId()))
+                .email(claims.getSubject())
+                .name(claims.get("name", String.class))
+                .build();
+
+        return user;
+    }
+
+    public Date getExpiration(String token) {
+        return Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration();
+    }
+
 }

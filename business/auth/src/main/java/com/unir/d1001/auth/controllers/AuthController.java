@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unir.d1001.auth.dto.LoginRequest;
+import com.unir.d1001.auth.dto.RefreshTokenRequest;
 import com.unir.d1001.auth.dto.RegisterRequest;
 import com.unir.d1001.auth.dto.TokenResponse;
 import com.unir.d1001.auth.services.AuthService;
@@ -20,7 +21,7 @@ public class AuthController {
 
     public AuthController(AuthService authService) {
         this.authService = authService;
-    }   
+    }
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponse> postMethodName(@RequestBody RegisterRequest entity) {
@@ -32,6 +33,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest entity) {
         var response = authService.login(entity);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refresh(@RequestBody RefreshTokenRequest request) {
+        var response = authService.refreshToken(request.refreshToken());
 
         return ResponseEntity.ok(response);
     }

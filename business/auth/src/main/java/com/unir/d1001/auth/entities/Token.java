@@ -1,5 +1,8 @@
 package com.unir.d1001.auth.entities;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +28,9 @@ public class Token {
     public Long id;
 
     public String token;
+
+    @Column(name = "expires_at")
+    public LocalDateTime expiresAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
