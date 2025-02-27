@@ -9,6 +9,16 @@
             "projectName": "auth",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ProductsApplication<products>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.unir.d1001.products.ProductsApplication",
+            "projectName": "products",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

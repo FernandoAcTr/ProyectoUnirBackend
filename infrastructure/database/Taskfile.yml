@@ -6,13 +6,16 @@ tasks:
   migrate:
     desc: "Run database migrations"
     cmds:
-      - atlas migrate hash --dir "file://migrations"
       - atlas migrate apply --dir "file://migrations" --url "{{.DATABASE_URL}}"
   migrate-new:
     desc: "Create a new migration file"
     cmds:
       - atlas migrate new {{.name}} --dir "file://migrations"
+  migrate-remove:
+    desc: "Remove the last migration file"
+    cmds:
+      - atlas migrate rm {{.name}} --dir "file://migrations"
   hash:
     desc: "Generate a hash for the current schema"
     cmds:
-      - atlas migrate hash
+      - atlas migrate hash --dir "file://migrations"
