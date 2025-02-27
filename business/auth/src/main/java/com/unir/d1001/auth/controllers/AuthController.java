@@ -53,4 +53,13 @@ public class AuthController {
 
         return authService.getUserFromToken(token);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        authService.logout(token);
+
+        return ResponseEntity.ok().build();
+    }
 }

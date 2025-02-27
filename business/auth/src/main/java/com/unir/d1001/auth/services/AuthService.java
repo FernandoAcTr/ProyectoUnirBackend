@@ -97,4 +97,9 @@ public class AuthService {
     public User getUserFromToken(String token) {
         return jwtService.parseToken(token);
     }
+
+    public void logout(String token) {
+        jwtService.parseToken(token);
+        tokenRepository.findByToken(token).ifPresent(tokenRepository::delete);
+    }
 }
