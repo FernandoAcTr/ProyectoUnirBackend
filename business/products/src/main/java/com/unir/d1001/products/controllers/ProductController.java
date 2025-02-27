@@ -1,14 +1,16 @@
 package com.unir.d1001.products.controllers;
 
+import com.unir.d1001.products.dto.ProductFilters;
 import com.unir.d1001.products.entities.Product;
 import com.unir.d1001.products.repositories.ProductRepository;
+import com.unir.d1001.products.services.ProductService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
@@ -17,6 +19,9 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProductService productService;
+
     @GetMapping
     public List<Product> getAllProducts(
             @RequestParam(required = false) Integer categoriaId,
@@ -24,18 +29,10 @@ public class ProductController {
             @RequestParam(required = false) Integer formaId,
             @RequestParam(required = false) Integer tipoArmazonId) {
 
-        List<Product> products = productRepository.findAll();
+        ProductFilters filters = new ProductFilters(categoriaId, marcaId, formaId, tipoArmazonId);
+        List<Product> products = productService.getAllProducts(filters);
 
-        return products.stream()
-                .filter(product -> (categoriaId == null
-                        || (product.getCategoria() != null && product.getCategoria().getId().equals(categoriaId))) &&
-                        (marcaId == null || (product.getMarca() != null && product.getMarca().getId().equals(marcaId)))
-                        &&
-                        (formaId == null || (product.getForma() != null && product.getForma().getId().equals(formaId)))
-                        &&
-                        (tipoArmazonId == null || (product.getTipoArmazon() != null
-                                && product.getTipoArmazon().getId().equals(tipoArmazonId))))
-                .collect(Collectors.toList());
+        return products;
     }
 
     @GetMapping("/{id}")
