@@ -1,4 +1,4 @@
-h1:+4l6cHXEv1f7lPhoCPIQwk6X0eO5c1YuY9EzR4/Cpn4=
+h1:TVvMtt8rlUjQHJEwRyg8nGc2PBmbZ25bWLY0HJh3Nc4=
 20250226043410_create_auth_tables.sql h1:bxtiaxopx1K9J8yQbHXeeaYuqbLZBffqKpjczC35Kgc=
 20250227015348_add_token_expiration.sql h1:JyRO0mNE/4KhX2Dtp86zi6V4T7GhE9KsLhs6GNuJz5U=
 20250227034442_create_products_table.sql h1:wyT2Q2KSEy6dCojdn0cu7zRQFd74HXzfkt20orEkZo8=
@@ -8,3 +8,4 @@ h1:+4l6cHXEv1f7lPhoCPIQwk6X0eO5c1YuY9EzR4/Cpn4=
 20250227045923_add_marcas_seeder.sql h1:lQxRbKSBQVOJDJk/t/rsskX2eO42NUVJhT7UyHpYfU0=
 20250227050022_add_tipos_armazon_seeder.sql h1:M3URCtmkKCmZfHfpBnZkpQ937lffUlMFWkMLOJEP/Gw=
 20250227050924_add_products_seeder.sql h1:78fD3tM67vUidJH+s4/iyzGcJcYVRaptRAy+naowxBg=
+20250227051109_add_products_details_seeder.sql h1:q2l24INbqp0lEbcEQyyFukfq+P05uWCyUwpbavwsppE=
