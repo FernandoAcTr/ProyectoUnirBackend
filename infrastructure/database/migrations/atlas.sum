@@ -1,4 +1,5 @@
-h1:dFW687GjosJU+x7sMzxx4FJelRpYCbJ0VQWg2aFYHfk=
+h1:DOaE3vNZW9gIRSEYDbR4wXR1wlmaE1+Up3cq+439hu0=
 20250226043410_create_auth_tables.sql h1:bxtiaxopx1K9J8yQbHXeeaYuqbLZBffqKpjczC35Kgc=
 20250227015348_add_token_expiration.sql h1:JyRO0mNE/4KhX2Dtp86zi6V4T7GhE9KsLhs6GNuJz5U=
-20250227034442_create_products_table.sql h1:P9oLMNaW/U9Ze/e1T+0yDryji+puiHsKPJ29Zd5TrTY=
+20250227034442_create_products_table.sql h1:wyT2Q2KSEy6dCojdn0cu7zRQFd74HXzfkt20orEkZo8=
+20250227045433_add_categories_seeder.sql h1:4EJ3yEsQVh3DSHhTbDF0Yizlt9tRS/l937bmVOXmg64=
