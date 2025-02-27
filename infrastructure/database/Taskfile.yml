@@ -11,6 +11,10 @@ tasks:
     desc: "Create a new migration file"
     cmds:
       - atlas migrate new {{.name}} --dir "file://migrations"
+  migrate-remove:
+    desc: "Remove the last migration file"
+    cmds:
+      - atlas migrate rm {{.name}} --dir "file://migrations"
   hash:
     desc: "Generate a hash for the current schema"
     cmds:
