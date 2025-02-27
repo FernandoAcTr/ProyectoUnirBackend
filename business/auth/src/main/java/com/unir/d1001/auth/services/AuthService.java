@@ -93,4 +93,8 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid token");
         }
     }
+
+    public User getUserFromToken(String token) {
+        return jwtService.parseToken(token);
+    }
 }

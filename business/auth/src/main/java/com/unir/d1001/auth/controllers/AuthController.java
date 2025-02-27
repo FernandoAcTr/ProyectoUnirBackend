@@ -7,11 +7,14 @@ import com.unir.d1001.auth.dto.LoginRequest;
 import com.unir.d1001.auth.dto.RefreshTokenRequest;
 import com.unir.d1001.auth.dto.RegisterRequest;
 import com.unir.d1001.auth.dto.TokenResponse;
+import com.unir.d1001.auth.entities.User;
 import com.unir.d1001.auth.services.AuthService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,5 +45,12 @@ public class AuthController {
         var response = authService.refreshToken(request.refreshToken());
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user")
+    public User getMethodName(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        return authService.getUserFromToken(token);
     }
 }
