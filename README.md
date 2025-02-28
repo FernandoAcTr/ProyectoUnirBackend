@@ -6,6 +6,7 @@
 - [Atlas](https://atlasgo.io/): Necesario para la gestión y ejecución de migraciones de base de datos.
 - [Task](https://taskfile.dev/#/installation): Opcional. Facilita la ejecución de comandos.
 - [MySQL](https://dev.mysql.com/downloads/mysql/): Base de datos relacional.
+- [Maven](https://maven.apache.org/download.cgi): Herramienta de gestión de proyectos Java.
 
 ## Directorios Principales
 
