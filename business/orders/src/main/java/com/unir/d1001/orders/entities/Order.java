@@ -33,13 +33,13 @@ public class Order {
     private Long userId;
 
     @Column(name = "subtotal", nullable = false)
-    private Double subtotal;
+    private float subtotal;
 
     @Column(name = "total", nullable = false)
-    private Double total;
+    private float total;
 
     @Column(name = "iva", nullable = false)
-    private Double iva;
+    private float iva;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

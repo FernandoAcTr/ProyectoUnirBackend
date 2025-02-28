@@ -44,9 +44,9 @@ public class OrderController {
 
         Order order = Order.builder()
                 .userId(1L)
-                .total(0.0)
-                .subtotal(0.0)
-                .iva(0.0)
+                .total(0.0f)
+                .subtotal(0.0f)
+                .iva(0.0f)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -69,8 +69,8 @@ public class OrderController {
             orderItems.add(orderItem);
         }
 
-        order.setSubtotal(orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum());
-        order.setIva(order.getSubtotal() * 0.16);
+        order.setSubtotal((float)orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum());
+        order.setIva((float)(order.getSubtotal() * 0.16));
         order.setTotal(order.getSubtotal() + order.getIva());
         order.setOrderItems(orderItems);
 
