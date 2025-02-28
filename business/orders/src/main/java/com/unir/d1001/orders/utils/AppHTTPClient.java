@@ -40,7 +40,7 @@ public class AppHTTPClient {
 
     private void buildProductWebClient() {
         productsClient = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
-                .baseUrl("http://localhost:3001")
+                .baseUrl("http://PRODUCTS")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
@@ -51,7 +51,7 @@ public class AppHTTPClient {
 
     private void buildAuthClient() {
         authClient = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
-                .baseUrl("http://localhost:3000")
+                .baseUrl("http://AUTH")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
