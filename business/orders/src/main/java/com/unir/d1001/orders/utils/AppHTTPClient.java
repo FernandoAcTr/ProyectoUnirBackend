@@ -17,8 +17,9 @@ import reactor.netty.http.client.HttpClient;
 
 @Component
 public class AppHTTPClient {
-    private WebClient productsClient;
     private WebClient.Builder webClientBuilder;
+    private WebClient productsClient;
+    private WebClient authClient;
 
     private HttpClient client = HttpClient.create()
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
@@ -34,6 +35,7 @@ public class AppHTTPClient {
     public AppHTTPClient(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;
         buildProductWebClient();
+        buildAuthClient();
     }
 
     private void buildProductWebClient() {
@@ -45,5 +47,16 @@ public class AppHTTPClient {
 
     public WebClient getProductsClient() {
         return productsClient;
+    }
+
+    private void buildAuthClient() {
+        authClient = webClientBuilder.clientConnector(new ReactorClientHttpConnector(client))
+                .baseUrl("http://localhost:3000")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
+    public WebClient getAuthClient() {
+        return authClient;
     }
 }

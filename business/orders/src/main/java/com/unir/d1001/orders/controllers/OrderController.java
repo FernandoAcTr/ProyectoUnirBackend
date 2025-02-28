@@ -6,6 +6,7 @@ import com.unir.d1001.orders.dto.ProductDto;
 import com.unir.d1001.orders.entities.Order;
 import com.unir.d1001.orders.entities.OrderItem;
 import com.unir.d1001.orders.repositories.OrderRepository;
+import com.unir.d1001.orders.services.AuthService;
 import com.unir.d1001.orders.services.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,24 +27,65 @@ public class OrderController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private AuthService authService;
+
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
-        return orderRepository.findById(id)
-                .map(order -> ResponseEntity.ok().body(order))
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Order> getOrderById(@RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long id) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        if (token.isEmpty()) {
+            return ResponseEntity.status(403).build();
+        }
+        var user = authService.getUser(token).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(403).build();
+        }
+
+        var order = orderRepository.findById(id).orElse(null);
+        if (order == null) {
+            return ResponseEntity.status(404).build();
+        }
+
+        if (!order.getUserId().equals(user.getId())) {
+            return ResponseEntity.status(404).build();
+        }
+
+        return ResponseEntity.ok(order);
     }
 
     @GetMapping
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public ResponseEntity<List<Order>> getAllOrders(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        if (token.isEmpty()) {
+            return ResponseEntity.status(403).build();
+        }
+        var user = authService.getUser(token).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(403).build();
+        }
+
+        var orders = orderRepository.findAllByUserId(user.getId());
+
+        return ResponseEntity.ok(orders);
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<Order> createOrder(@RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody CreateOrderRequest request) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        if (token.isEmpty()) {
+            return ResponseEntity.status(403).build();
+        }
+        var user = authService.getUser(token).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(403).build();
+        }
+
         List<OrderItem> orderItems = new ArrayList<>();
 
         Order order = Order.builder()
-                .userId(1L)
+                .userId(user.getId())
                 .total(0.0f)
                 .subtotal(0.0f)
                 .iva(0.0f)
@@ -69,8 +111,8 @@ public class OrderController {
             orderItems.add(orderItem);
         }
 
-        order.setSubtotal((float)orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum());
-        order.setIva((float)(order.getSubtotal() * 0.16));
+        order.setSubtotal((float) orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum());
+        order.setIva((float) (order.getSubtotal() * 0.16));
         order.setTotal(order.getSubtotal() + order.getIva());
         order.setOrderItems(orderItems);
 
