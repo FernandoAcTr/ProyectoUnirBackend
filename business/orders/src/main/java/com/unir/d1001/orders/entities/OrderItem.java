@@ -1,6 +1,5 @@
 package com.unir.d1001.orders.entities;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -38,14 +37,15 @@ public class OrderItem {
     private Integer quantity;
 
     @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    private Double price;
 
     @Column(name = "subtotal", nullable = false)
-    private BigDecimal subtotal;
+    private Double subtotal;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", updatable = false)
     private LocalDateTime updatedAt;
+
 }

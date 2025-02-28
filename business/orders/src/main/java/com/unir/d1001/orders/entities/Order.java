@@ -1,9 +1,9 @@
 package com.unir.d1001.orders.entities;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,20 +31,20 @@ public class Order {
     private Long userId;
 
     @Column(name = "subtotal", nullable = false)
-    private BigDecimal subtotal;
+    private Double subtotal;
 
     @Column(name = "total", nullable = false)
-    private BigDecimal total;
+    private Double total;
 
     @Column(name = "iva", nullable = false)
-    private BigDecimal iva;
+    private Double iva;
 
     @Column(name = "created_at")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 }
