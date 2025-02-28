@@ -30,11 +30,11 @@ El microservicio de `orders` se encarga de la gestión de pedidos. Permite crear
 
 ## Setup Proyecto
 
-## Base de Datos
+### Base de Datos
 
 El proyecto utiliza una base de datos Mysql, para esto debes tener instalado de manera local el servidor de base de datos Mysql.
 
-### Crear Base de Datos
+#### Crear Base de Datos
 
 Navega al directorio `infrastructure/database` y ejecuta el siguiente comando:
 
@@ -61,7 +61,7 @@ Nota: Si no quieres modificar los archivos originales `applicacion.properties`, 
 java -jar -Dspring.profiles.active=local target/auth-0.0.1-SNAPSHOT.jar
 ```
 
-### Ejecutar Microservicios
+## Ejecutar Microservicios
 
 Una vez configurada la base de datos y los archivos de configuración de los microservicios, puedes ejecutar cada uno de ellos de manera independiente. Pero asegurate de tener los microservicios eurekaserver y apigateway corriendo para que los microservicios se registren y puedan ser consumidos.
 
@@ -72,3 +72,35 @@ http://localhost:8085/auth/login
 ```
 
 Api Gateway, junto con Eureka se encargarán de resolver las peticiones a los microservicios registrados.
+
+Para ejecutar los microservicios, navega al directorio de cada uno de ellos y ejecuta el siguiente comando:
+
+```bash
+# Modo Desarrollo (con perfil local)
+mvn spring-boot:run -Dspring-boot.run.profiles=local
+
+# O usando Task
+task dev
+```
+
+## Compilar Microservicios
+
+Para compilar los microservicios, navega al directorio de cada uno de ellos y ejecuta el siguiente comando:
+
+```bash
+mvn clean package
+
+# O usando Task
+task build
+```
+
+## Ejecutar binarios
+
+Una vez compilados los microservicios, navega al directorio `target` de cada uno de ellos y ejecuta el siguiente comando:
+
+```bash
+java -jar target/nombre-del-microservicio.jar
+
+# O usando Task
+task run
+```
