@@ -2,6 +2,8 @@ package com.unir.d1001.orders.services;
 
 import java.util.Optional;
 
+import javax.naming.NameNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +29,18 @@ public class AuthService {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    public UserDto getUserFromBearerToken(String authorizationHeader) throws NameNotFoundException {
+        String token = authorizationHeader.replace("Bearer ", "");
+        if (token.isEmpty()) {
+            throw new NameNotFoundException();
+        }
+        var user = getUser(token).orElse(null);
+        if (user == null) {
+            throw new NameNotFoundException();
+        }
+
+        return user;
     }
 }

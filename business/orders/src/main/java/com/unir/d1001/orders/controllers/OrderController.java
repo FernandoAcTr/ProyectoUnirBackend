@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.NameNotFoundException;
+
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -32,15 +34,8 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrderById(@RequestHeader("Authorization") String authorizationHeader,
-            @PathVariable Long id) {
-        String token = authorizationHeader.replace("Bearer ", "");
-        if (token.isEmpty()) {
-            return ResponseEntity.status(403).build();
-        }
-        var user = authService.getUser(token).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(403).build();
-        }
+            @PathVariable Long id) throws NameNotFoundException {
+        var user = authService.getUserFromBearerToken(authorizationHeader);
 
         var order = orderRepository.findById(id).orElse(null);
         if (order == null) {
@@ -55,15 +50,9 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders(@RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.replace("Bearer ", "");
-        if (token.isEmpty()) {
-            return ResponseEntity.status(403).build();
-        }
-        var user = authService.getUser(token).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(403).build();
-        }
+    public ResponseEntity<List<Order>> getAllOrders(@RequestHeader("Authorization") String authorizationHeader)
+            throws NameNotFoundException {
+        var user = authService.getUserFromBearerToken(authorizationHeader);
 
         var orders = orderRepository.findAllByUserId(user.getId());
 
@@ -72,15 +61,8 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestHeader("Authorization") String authorizationHeader,
-            @RequestBody CreateOrderRequest request) {
-        String token = authorizationHeader.replace("Bearer ", "");
-        if (token.isEmpty()) {
-            return ResponseEntity.status(403).build();
-        }
-        var user = authService.getUser(token).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(403).build();
-        }
+            @RequestBody CreateOrderRequest request) throws NameNotFoundException {
+        var user = authService.getUserFromBearerToken(authorizationHeader);
 
         List<OrderItem> orderItems = new ArrayList<>();
 
