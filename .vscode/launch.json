@@ -38,6 +38,17 @@
             "mainClass": "com.unir.d1001.eurekaserver.EurekaserverApplication",
             "projectName": "eurekaserver",
             "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=56796 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=eurekaserver"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApigatewayserverApplication<apigatewayserver>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.unir.d1001.apigatewayserver.ApigatewayserverApplication",
+            "projectName": "apigatewayserver",
+            "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
     ]

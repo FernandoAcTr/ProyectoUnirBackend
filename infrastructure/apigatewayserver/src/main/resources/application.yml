@@ -1,5 +1,10 @@
 server:
-  port: 3005
+  port: 8085
+
+logging:
+  level:
+    '[org.springframework.cloud.gateway]': DEBUG
+    '[reactor.netty.http.client]': DEBUG
 
 eureka:
   client:

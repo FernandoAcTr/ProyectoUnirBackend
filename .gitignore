@@ -3,6 +3,7 @@
 
 .env
 application-local.properties
+.DS_Store
 
 ### Java ###
 # Compiled class file
