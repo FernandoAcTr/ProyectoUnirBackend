@@ -46,6 +46,11 @@ public class OrderController {
             return ResponseEntity.status(404).build();
         }
 
+        for (var item : order.getOrderItems()) {
+            ProductDto product = productService.getProductById(item.getProductId()).orElse(null);
+            item.setProduct(product);
+        }
+
         return ResponseEntity.ok(order);
     }
 

@@ -14,7 +14,7 @@ public class ProductService {
     @Autowired
     AppHTTPClient appHTTPClient;
 
-    public Optional<ProductDto> getProductById(Long id) {
+    public Optional<ProductDto> getProductById(int id) {
         try {
             ProductDto product = appHTTPClient.getProductsClient().get()
                     .uri("/products/" + id)
