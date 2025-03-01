@@ -3,8 +3,8 @@ server:
 
 logging:
   level:
-    '[org.springframework.cloud.gateway]': DEBUG
-    '[reactor.netty.http.client]': DEBUG
+    "[org.springframework.cloud.gateway]": DEBUG
+    "[reactor.netty.http.client]": DEBUG
 
 eureka:
   client:
@@ -22,22 +22,24 @@ management:
         include: "*"
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: apigatewayserver
   cloud:
     gateway:
       routes:
-        - id: auth
+        - id: AUTH
           uri: lb://AUTH
           predicates:
             - Path=/auth/**
-                    
-        - id: products
+
+        - id: PRODUCTS
           uri: lb://PRODUCTS
           predicates:
             - Path=/products/**
 
-        - id: orders
+        - id: ORDERS
           uri: lb://ORDERS
           predicates:
             - Path=/orders/**

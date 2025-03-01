@@ -1,14 +1,14 @@
-# Usar una imagen base de Java
+# Usa una imagen oficial de OpenJDK como base
 FROM openjdk:17-jdk-slim
 
-# Configurar directorio de trabajo
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar el archivo JAR generado
+# Copia el archivo JAR de la aplicación (debe estar compilado previamente)
 COPY target/*.jar app.jar
 
-# Exponer el puerto del microservicio
-EXPOSE 8081
+# Expone el puerto configurado en la aplicación
+EXPOSE 8082
 
-# Ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Comando de ejecución de la aplicación
+CMD ["java", "-jar", "app.jar"]

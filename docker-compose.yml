@@ -1,72 +1,94 @@
 services:
-  eurekaserver:
-    build: ./infrastructure/eurekaserver
-    container_name: eurekaserver
-    ports:
-      - "8761:8761"
-    networks:
-      - app_network
-
-  auth:
-    build: ./business/auth
-    container_name: auth
+  auth-service:
+    build:
+      context: ./business/auth
+      dockerfile: dockerfile
     ports:
       - "8081:8081"
-    depends_on:
-      - eurekaserver
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka/
-    networks:
-      - app_network
+      JWT_SECRET: "supersecretkey"
+      DATASOURCE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATASOURCE_USERNAME: "root"
+      DATASOURCE_PASSWORD: "root"
+      EUREKA_SERVER: "http://eurekaserver:8761/eureka"
+    depends_on:
+      - mysql
+      - eurekaserver
 
   orders:
-    build: ./business/orders
-    container_name: orders
+    build:
+      context: ./business/orders
+      dockerfile: dockerfile
     ports:
       - "8082:8082"
-    depends_on:
-      - eurekaserver
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka/
-    networks:
-      - app_network
+      DATABASE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATABASE_USERNAME: "root"
+      DATABASE_PASSWORD: "root"
+      EUREKA_SERVER: "http://eurekaserver:8761/eureka"
+
+    depends_on:
+      - mysql
 
   products:
-    build: ./business/products
-    container_name: products
+    build:
+      context: ./business/products
+      dockerfile: dockerfile
     ports:
       - "8083:8083"
+    environment:
+      DATABASE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATABASE_USERNAME: "root"
+      DATABASE_PASSWORD: "root"
+      EUREKA_SERVER: "http://eurekaserver:8761/eureka"
+
+    depends_on:
+      - mysql
+
+  eurekaserver:
+    build:
+      context: ./infrastructure/eurekaserver
+      dockerfile: dockerfile
+    ports:
+      - "8761:8761"
+
+  apigateway:
+    build:
+      context: ./infrastructure/apigatewayserver
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_SERVER: "http://eurekaserver:8761/eureka"
     depends_on:
       - eurekaserver
+
+  mysql:
+    image: mysql:latest
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka/
-    networks:
-      - app_network
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3344:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
-    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
       - "9200:9200"
-    networks:
-      - app_network
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.6.2
-    container_name: kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  kinaba:
+    image: docker.elastic.co/kibana/kibana:7.10.1
     ports:
       - "5601:5601"
     depends_on:
       - elasticsearch
-    networks:
-      - app_network
 
-networks:
-  app_network:
-    driver: bridge
+volumes:
+  mysql_data:
+  es_data:
