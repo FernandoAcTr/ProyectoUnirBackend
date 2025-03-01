@@ -11,13 +11,13 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class GlobalPostFilter {
 
-    @Bean
-    GlobalFilter globalPostFilter() {
-        return (exchange, chain) -> {
-            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-                log.info("Global Post-filter executed");
-            }));
-        };
-    }
+  @Bean
+  GlobalFilter gPostFilter() {
+    return (exchange, chain) -> {
+      return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+        log.info("Global Post-filter executed");
+      }));
+    };
+  }
 
 }

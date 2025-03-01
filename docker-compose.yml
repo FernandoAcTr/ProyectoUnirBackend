@@ -1,0 +1,94 @@
+services:
+  auth-service:
+    build:
+      context: ./business/auth
+      dockerfile: dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      JWT_SECRET: "supersecretkey"
+      DATASOURCE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATASOURCE_USERNAME: "root"
+      DATASOURCE_PASSWORD: "root"
+      EUREKA_SERVER: "http://eurekaserver:8761/eureka"
+    depends_on:
+      - mysql
+      - eurekaserver
+
+  orders:
+    build:
+      context: ./business/orders
+      dockerfile: dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      DATABASE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATABASE_USERNAME: "root"
+      DATABASE_PASSWORD: "root"
+      EUREKA_SERVER: "http://eurekaserver:8761/eureka"
+
+    depends_on:
+      - mysql
+
+  products:
+    build:
+      context: ./business/products
+      dockerfile: dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      DATABASE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATABASE_USERNAME: "root"
+      DATABASE_PASSWORD: "root"
+      EUREKA_SERVER: "http://eurekaserver:8761/eureka"
+
+    depends_on:
+      - mysql
+
+  eurekaserver:
+    build:
+      context: ./infrastructure/eurekaserver
+      dockerfile: dockerfile
+    ports:
+      - "8761:8761"
+
+  apigateway:
+    build:
+      context: ./infrastructure/apigatewayserver
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_SERVER: "http://eurekaserver:8761/eureka"
+    depends_on:
+      - eurekaserver
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3344:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  kinaba:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+volumes:
+  mysql_data:
+  es_data:
