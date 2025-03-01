@@ -1,0 +1,72 @@
+services:
+  eurekaserver:
+    build: ./infrastructure/eurekaserver
+    container_name: eurekaserver
+    ports:
+      - "8761:8761"
+    networks:
+      - app_network
+
+  auth:
+    build: ./business/auth
+    container_name: auth
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eurekaserver
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka/
+    networks:
+      - app_network
+
+  orders:
+    build: ./business/orders
+    container_name: orders
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eurekaserver
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka/
+    networks:
+      - app_network
+
+  products:
+    build: ./business/products
+    container_name: products
+    ports:
+      - "8083:8083"
+    depends_on:
+      - eurekaserver
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eurekaserver:8761/eureka/
+    networks:
+      - app_network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    networks:
+      - app_network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.6.2
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
