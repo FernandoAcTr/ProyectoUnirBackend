@@ -1,0 +1,38 @@
+version: "3"
+
+tasks:
+  clean:
+    desc: "Clean the project"
+    cmds:
+      - mvn clean
+
+  validate:
+    desc: "Validate the project"
+    cmds:
+      - mvn validate
+
+  compile:
+    desc: "Compile the project"
+    cmds:
+      - mvn compile
+
+  build:
+    desc: "Package the project"
+    cmds:
+      - mvn package
+
+  install:
+    desc: "Install the project"
+    cmds:
+      - mvn clean install
+
+  dev: 
+    desc: "Run the project in dev mode"
+    cmds:
+      - mvn spring-boot:run
+
+  run:
+    desc: "Run the project"
+    cmds:
+      - task: package
+      - java -jar target/eurekaserver-0.0.1-SNAPSHOT.jar
