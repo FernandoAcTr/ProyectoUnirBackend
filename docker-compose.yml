@@ -1,5 +1,6 @@
 services:
   auth-service:
+    container_name: auth-service
     build:
       context: ./business/auth
       dockerfile: dockerfile
@@ -18,6 +19,7 @@ services:
       - backend-network
 
   orders:
+    container_name: orders
     build:
       context: ./business/orders
       dockerfile: dockerfile
@@ -35,6 +37,7 @@ services:
       - backend-network
 
   products:
+    container_name: products
     build:
       context: ./business/products
       dockerfile: dockerfile
@@ -52,6 +55,7 @@ services:
       - backend-network
 
   eurekaserver:
+    container_name: eurekaserver
     build:
       context: ./infrastructure/eurekaserver
       dockerfile: dockerfile
@@ -61,6 +65,7 @@ services:
       - backend-network
 
   apigateway:
+    container_name: apigateway
     build:
       context: ./infrastructure/apigatewayserver
       dockerfile: dockerfile
@@ -74,6 +79,7 @@ services:
       - backend-network
 
   mysql:
+    container_name: mysql
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -86,6 +92,7 @@ services:
       - backend-network
 
   elasticsearch:
+    container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
     environment:
       - discovery.type=single-node
@@ -100,6 +107,7 @@ services:
       - backend-network
 
   kibana:
+    container_name: kibana
     image: docker.elastic.co/kibana/kibana:8.17.2
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
