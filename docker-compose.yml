@@ -111,8 +111,7 @@ services:
     image: docker.elastic.co/kibana/kibana:8.17.2
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD:-asupersecretpassword}
+      - ELASTICSEARCH_SERVICE_TOKEN=${ELASTIC_TOKEN:-asupersecretpassword}
     ports:
       - "5601:5601"
     depends_on:
