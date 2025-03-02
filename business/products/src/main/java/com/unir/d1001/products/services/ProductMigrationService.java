@@ -23,9 +23,15 @@ public class ProductMigrationService {
         List<Product> products = productRepository.findAll();
 
         List<com.unir.d1001.products.entities.elastic.Product> productDocuments = products.stream()
-                .map(this::convertToElasticsearch).toList();
+                .filter(this::isNotInElasticsearch)
+                .map(this::convertToElasticsearch)
+                .toList();
 
         productElasticsearchRepository.saveAll(productDocuments);
+    }
+
+    private boolean isNotInElasticsearch(Product product) {
+        return !productElasticsearchRepository.existsById(product.getId());
     }
 
     private com.unir.d1001.products.entities.elastic.Product convertToElasticsearch(Product product) {
