@@ -1,6 +1,8 @@
 package com.unir.d1001.products.entities.elastic;
 
 import java.time.LocalDateTime;
+
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -38,10 +40,10 @@ public class Product {
     @Field(type = FieldType.Keyword)
     private String forma;
 
-    @Field(type = FieldType.Date)
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
     private LocalDateTime createdAt;
 
-    @Field(type = FieldType.Date)
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
     private LocalDateTime updatedAt;
 
     @Field(type = FieldType.Object)

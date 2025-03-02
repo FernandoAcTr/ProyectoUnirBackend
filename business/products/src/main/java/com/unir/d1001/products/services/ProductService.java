@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 import com.unir.d1001.products.dto.ProductElasticFilters;
@@ -16,12 +17,17 @@ public class ProductService {
     @Autowired
     private ProductElasticsearchRepository productElasticsearchRepository;
 
+    @Autowired
+    private ElasticsearchOperations elasticsearchOperations;
+
     public List<Product> getAllProducts(ProductElasticFilters filters) {
-        List<Product> products = productElasticsearchRepository.searchProducts(
-                filters.categoria,
-                filters.marca,
-                filters.forma,
-                filters.tipoArmazon);
+        Optional<String> categoria = Optional.ofNullable(filters.categoria);
+        Optional<String> marca = Optional.ofNullable(filters.marca);
+        Optional<String> forma = Optional.ofNullable(filters.forma);
+        Optional<String> tipoArmazon = Optional.ofNullable(filters.tipoArmazon);
+
+        List<Product> products = productElasticsearchRepository.searchProducts(categoria, marca, forma, tipoArmazon,
+                elasticsearchOperations);
 
         return products;
     }
