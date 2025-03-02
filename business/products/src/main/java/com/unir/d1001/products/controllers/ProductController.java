@@ -1,8 +1,7 @@
 package com.unir.d1001.products.controllers;
 
-import com.unir.d1001.products.dto.ProductFilters;
-import com.unir.d1001.products.entities.Product;
-import com.unir.d1001.products.repositories.ProductRepository;
+import com.unir.d1001.products.dto.ProductElasticFilters;
+import com.unir.d1001.products.entities.elastic.Product;
 import com.unir.d1001.products.services.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +16,16 @@ import java.util.Optional;
 public class ProductController {
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
     private ProductService productService;
 
     @GetMapping
     public List<Product> getAllProducts(
-            @RequestParam(required = false) Integer categoriaId,
-            @RequestParam(required = false) Integer marcaId,
-            @RequestParam(required = false) Integer formaId,
-            @RequestParam(required = false) Integer tipoArmazonId) {
+            @RequestParam(required = false) String categoria,
+            @RequestParam(required = false) String marca,
+            @RequestParam(required = false) String forma,
+            @RequestParam(required = false) String tipoArmazon) {
 
-        ProductFilters filters = new ProductFilters(categoriaId, marcaId, formaId, tipoArmazonId);
+        ProductElasticFilters filters = new ProductElasticFilters(categoria, marca, forma, tipoArmazon);
         List<Product> products = productService.getAllProducts(filters);
 
         return products;
@@ -37,12 +33,17 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Integer id) {
-        Optional<Product> product = productRepository.findByIdWithRelations(id);
+        Optional<Product> product = productService.getProductById(id);
 
         if (product.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.of(product);
+    }
+
+    @GetMapping("/search")
+    public List<Product> searchProducts(@RequestParam String query) {
+        return productService.searchProductsByDescripcion(query);
     }
 }

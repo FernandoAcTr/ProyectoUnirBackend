@@ -4,6 +4,8 @@
 .env
 application-local.properties
 .DS_Store
+es_data
+mysql_data
 
 ### Java ###
 # Compiled class file

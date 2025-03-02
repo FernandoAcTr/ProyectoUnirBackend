@@ -1,5 +1,6 @@
 services:
   auth-service:
+    container_name: auth-service
     build:
       context: ./business/auth
       dockerfile: dockerfile
@@ -14,8 +15,11 @@ services:
     depends_on:
       - mysql
       - eurekaserver
+    networks:
+      - backend-network
 
   orders:
+    container_name: orders
     build:
       context: ./business/orders
       dockerfile: dockerfile
@@ -29,8 +33,11 @@ services:
 
     depends_on:
       - mysql
+    networks:
+      - backend-network
 
   products:
+    container_name: products
     build:
       context: ./business/products
       dockerfile: dockerfile
@@ -44,15 +51,21 @@ services:
 
     depends_on:
       - mysql
+    networks:
+      - backend-network
 
   eurekaserver:
+    container_name: eurekaserver
     build:
       context: ./infrastructure/eurekaserver
       dockerfile: dockerfile
     ports:
       - "8761:8761"
+    networks:
+      - backend-network
 
   apigateway:
+    container_name: apigateway
     build:
       context: ./infrastructure/apigatewayserver
       dockerfile: dockerfile
@@ -62,8 +75,11 @@ services:
       EUREKA_SERVER: "http://eurekaserver:8761/eureka"
     depends_on:
       - eurekaserver
+    networks:
+      - backend-network
 
   mysql:
+    container_name: mysql
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -71,24 +87,42 @@ services:
     ports:
       - "3344:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - backend-network
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
     environment:
       - discovery.type=single-node
+      - xpack.security.enabled=true
+      - xpack.security.transport.ssl.enabled=false
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-asupersecretpassword}
     ports:
       - "9200:9200"
     volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - ./es_data:/usr/share/elasticsearch/data
+    networks:
+      - backend-network
 
-  kinaba:
-    image: docker.elastic.co/kibana/kibana:7.10.1
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.17.2
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_SERVICE_TOKEN=${ELASTIC_TOKEN:-AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpuQ21DbXo0OFJMS2Zsd1lncHRnc2dR}
     ports:
       - "5601:5601"
     depends_on:
       - elasticsearch
+    networks:
+      - backend-network
 
 volumes:
   mysql_data:
   es_data:
+
+networks:
+  backend-network:
+    driver: bridge
