@@ -87,7 +87,7 @@ services:
     ports:
       - "3344:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ./mysql_data:/var/lib/mysql
     networks:
       - backend-network
 
@@ -102,7 +102,7 @@ services:
     ports:
       - "9200:9200"
     volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - ./es_data:/usr/share/elasticsearch/data
     networks:
       - backend-network
 
@@ -111,7 +111,7 @@ services:
     image: docker.elastic.co/kibana/kibana:8.17.2
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - ELASTICSEARCH_SERVICE_TOKEN=${ELASTIC_TOKEN:-asupersecretpassword}
+      - ELASTICSEARCH_SERVICE_TOKEN=${ELASTIC_TOKEN:-AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpuQ21DbXo0OFJMS2Zsd1lncHRnc2dR}
     ports:
       - "5601:5601"
     depends_on:
