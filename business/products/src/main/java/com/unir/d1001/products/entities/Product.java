@@ -1,7 +1,6 @@
 package com.unir.d1001.products.entities;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -12,7 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,9 +52,9 @@ public class Product {
     @JoinColumn(name = "forma_id")
     private Forma forma;
 
-    @OneToMany(mappedBy = "producto")
+    @OneToOne(mappedBy = "producto")
     @JsonManagedReference
-    private List<ProductDetail> details;
+    private ProductDetail details;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
