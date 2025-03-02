@@ -1,7 +1,9 @@
 package com.unir.d1001.products.repositories.elastic;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -18,39 +20,36 @@ public interface ProductElasticsearchRepository extends ElasticsearchRepository<
 
   List<Product> findByDescripcionContaining(String descripcion);
 
-  @Query("""
-      {
-        "bool": {
-          "must": [
-            { "match": { "categoria.keyword": "?0" }},
-            { "match": { "marca.keyword": "?1" }},
-            { "match": { "forma.keyword": "?2" }},
-            { "match": { "tipoArmazon.keyword": "?3" }}
-          ]
-        }
-      }
-      """)
-  List<Product> searchProducts(String categoria, String marca, String forma, String tipoArmazon);
-
-  default List<Product> searchProducts(Optional<String> categoria,
+  default List<Product> searchProducts(
+      Optional<String> categoria,
       Optional<String> marca,
       Optional<String> forma,
       Optional<String> tipoArmazon,
       ElasticsearchOperations elasticsearchOperations) {
 
-    Criteria criteria = new Criteria();
+    List<Criteria> criteriaList = new ArrayList<>();
 
-    categoria.ifPresent(value -> criteria.and("categoria.keyword").is(value));
-    marca.ifPresent(value -> criteria.and("marca.keyword").is(value));
-    forma.ifPresent(value -> criteria.and("forma.keyword").is(value));
-    tipoArmazon.ifPresent(value -> criteria.and("tipoArmazon.keyword").is(value));
+    categoria.ifPresent(value -> criteriaList.add(new Criteria("categoria.keyword").is("value")));
+    marca.ifPresent(value -> criteriaList.add(new Criteria("marca.keyword").is(value)));
+    forma.ifPresent(value -> criteriaList.add(new Criteria("forma.keyword").is(value)));
+    tipoArmazon.ifPresent(value -> criteriaList.add(new Criteria("tipoArmazon.keyword").is(value)));
 
-    CriteriaQuery query = new CriteriaQuery(criteria);
+    if (criteriaList.isEmpty()) {
+      List<Product> allProducts = new ArrayList<>();
+      findAll().forEach(allProducts::add);
+      return allProducts;
+    }
 
+    Criteria combinedCriteria = criteriaList.get(0);
+    for (int i = 1; i < criteriaList.size(); i++) {
+      combinedCriteria = combinedCriteria.and(criteriaList.get(i));
+    }
+
+    CriteriaQuery query = new CriteriaQuery(combinedCriteria);
     return elasticsearchOperations.search(query, Product.class)
         .stream()
         .map(SearchHit::getContent)
-        .toList();
+        .collect(Collectors.toList());
   }
 
   @Query("""
