@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/*.jar app.jar
 
 # Expone el puerto configurado en la aplicación
-EXPOSE 8083
+EXPOSE 3001
 
 # Comando de ejecución de la aplicación
 CMD ["java", "-jar", "app.jar"]
