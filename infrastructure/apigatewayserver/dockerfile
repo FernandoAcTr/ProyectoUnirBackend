@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/*.jar app.jar
 
 # Exponer el puerto del API Gateway
-EXPOSE 8080
+EXPOSE 8085
 
 # Establecer variables de entorno para la conexión a MySQL
 ENV MYSQL_HOST=mysql

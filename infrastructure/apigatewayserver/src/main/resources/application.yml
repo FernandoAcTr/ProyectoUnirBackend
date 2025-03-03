@@ -35,17 +35,17 @@ spring:
             allowedMethods: "*"
             allowedHeaders: "*"
       routes:
-        - id: AUTH
-          uri: lb://AUTH
+        - id: auth
+          uri: lb://auth
           predicates:
             - Path=/auth/**
 
-        - id: PRODUCTS
-          uri: lb://PRODUCTS
+        - id: products
+          uri: lb://products
           predicates:
             - Path=/products/**
 
-        - id: ORDERS
-          uri: lb://ORDERS
+        - id: orders
+          uri: lb://orders
           predicates:
             - Path=/orders/**

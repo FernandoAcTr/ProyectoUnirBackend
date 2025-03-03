@@ -5,9 +5,9 @@ services:
       context: ./business/auth
       dockerfile: dockerfile
     ports:
-      - "8081:8081"
+      - "3000:3000"
     environment:
-      JWT_SECRET: "supersecretkey"
+      JWT_SECRET: "2f29cefef678f48e80a1414e58f885288fd44747fa8c708485a3c8a0375a68da"
       DATASOURCE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
       DATASOURCE_USERNAME: "root"
       DATASOURCE_PASSWORD: "root"
@@ -24,11 +24,11 @@ services:
       context: ./business/orders
       dockerfile: dockerfile
     ports:
-      - "8082:8082"
+      - "3002:3002"
     environment:
-      DATABASE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
-      DATABASE_USERNAME: "root"
-      DATABASE_PASSWORD: "root"
+      DATASOURCE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATASOURCE_USERNAME: "root"
+      DATASOURCE_PASSWORD: "root"
       EUREKA_SERVER: "http://eurekaserver:8761/eureka"
 
     depends_on:
@@ -42,12 +42,15 @@ services:
       context: ./business/products
       dockerfile: dockerfile
     ports:
-      - "8083:8083"
+      - "3001:3001"
     environment:
-      DATABASE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
-      DATABASE_USERNAME: "root"
-      DATABASE_PASSWORD: "root"
+      DATASOURCE_URL: "jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATASOURCE_USERNAME: "root"
+      DATASOURCE_PASSWORD: "root"
       EUREKA_SERVER: "http://eurekaserver:8761/eureka"
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      ELASTICSEARCH_USERNAME: "elastic"
+      ELASTICSEARCH_PASSWORD: "asupersecretpassword"
 
     depends_on:
       - mysql
@@ -70,7 +73,7 @@ services:
       context: ./infrastructure/apigatewayserver
       dockerfile: dockerfile
     ports:
-      - "8080:8080"
+      - "8085:8085"
     environment:
       EUREKA_SERVER: "http://eurekaserver:8761/eureka"
     depends_on:
@@ -95,10 +98,10 @@ services:
     container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=false
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-asupersecretpassword}
+      ELASTIC_PASSWORD: asupersecretpassword
+      xpack.security.enabled: "true"
+      discovery.type: "single-node"
+
     ports:
       - "9200:9200"
     volumes:
@@ -110,8 +113,8 @@ services:
     container_name: kibana
     image: docker.elastic.co/kibana/kibana:8.17.2
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - ELASTICSEARCH_SERVICE_TOKEN=${ELASTIC_TOKEN:-AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpuQ21DbXo0OFJMS2Zsd1lncHRnc2dR}
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTICSEARCH_SERVICE_TOKEN: AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpuQ21DbXo0OFJMS2Zsd1lncHRnc2dR
     ports:
       - "5601:5601"
     depends_on:
