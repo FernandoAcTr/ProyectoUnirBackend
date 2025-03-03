@@ -24,6 +24,7 @@ public class ProductService {
 
             return Optional.of(product);
         } catch (Exception e) {
+            System.out.println(e);
             return Optional.empty();
         }
     }
